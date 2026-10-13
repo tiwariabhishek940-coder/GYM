@@ -18,7 +18,7 @@ GYM/
 
 | # | Gym | Folder | Live URL | Status |
 |---|-----|--------|----------|--------|
-| 1 | S3 Fitness | [sites/s3-fitness](sites/s3-fitness) | - | Draft |
+| 1 | S3 Fitness | [sites/s3-fitness](sites/s3-fitness) | [link](https://s3-fitness-bhopal-demo.netlify.app) | Draft |
 | 2 | Swastham Fitness Centre | [sites/swastham-fitness](sites/swastham-fitness) | - | Prospect draft |
 | 3 | Tarun Fitness Arena | [sites/tarun-fitness-arena](sites/tarun-fitness-arena) | - | Prospect draft |
 | 4 | AS Fitness Terminus | [sites/as-fitness-terminus](sites/as-fitness-terminus) | - | Prospect draft |

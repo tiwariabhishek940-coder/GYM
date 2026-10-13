@@ -1,6 +1,6 @@
 {
   "city": "Bhopal",
-  "note": "Found via web search of aggregator listings (Fitpass, LyfSkills, Yappe). Unverified: confirm phone/hours with the gym before building or publishing. null = not found. Dance/art/martial-arts academies were excluded. Only 6 of 38 gyms have a phone number from these sources.",
+  "note": "Found via web search of aggregator listings (Fitpass, LyfSkills, Yappe). Unverified: confirm phone/hours with the gym before building or publishing. null = not found. Dance/art/martial-arts academies were excluded. Only 6 of 38 gyms have a phone number from these sources. Ratings/review counts come from the listed aggregator source, not necessarily Google.",
   "areas": {
     "Kolar Road": [
       {
@@ -17,7 +17,13 @@
         "reviews": 158,
         "hours": "6 AM - 10 PM",
         "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523",
-        "status": "prospect draft (sites/raiden-gym)"
+        "status": "prospect draft (sites/raiden-gym)",
+        "services": [
+          "HIIT",
+          "Cardio",
+          "Strength training"
+        ],
+        "services_source": "https://fitpass.co.in/studio/raiden-gym-kolar-road (search summary: HIIT, cardio, several types of weight and strength training)"
       },
       {
         "name": "The Hulk Gym",
@@ -114,7 +120,13 @@
         "phone": null,
         "rating": 5.0,
         "reviews": 176,
-        "source": "https://discover.lyfskills.com/gyms/listing/11888"
+        "source": "https://discover.lyfskills.com/gyms/listing/11888",
+        "services": [
+          "Boxing",
+          "HIIT",
+          "Zumba"
+        ],
+        "services_source": "https://discover.lyfskills.com/gyms/listing/11888 (classes mentioned in listing)"
       },
       {
         "name": "Shivaay The Fitness Club",

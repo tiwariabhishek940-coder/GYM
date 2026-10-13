@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """Generate a gym website from sites/<slug>/gym.json.
 
-Usage: python3 tools/generate.py <slug> [<slug> ...]
+Usage: python3 tools/generate.py <slug> [<slug> ...]   |   python3 tools/generate.py --all
 Writes index.html, assets/css|js, README.md in sites/<slug>/ and updates the
 Sites table in the root README.md. Existing files in assets/images are kept.
+
+gym.json fields (all optional except slug-folder, name, area, city):
+  name, tagline_name, area, city, address, phone, rating, reviews, rating_source,
+  hours [{days,time}], services [..], blurbs (true = show short service blurbs),
+  about, lead, accent (#hex), images {hero, about, team [file | {file, alt}]},
+  status ("Prospect draft" | "Draft" | "Delivered"), live_url
+Unknown facts must be left out: nothing is invented by the template.
 """
 import html, json, re, shutil, sys
 from pathlib import Path
-from urllib.parse import quote_plus
+from urllib.parse import quote, quote_plus
 
 ROOT = Path(__file__).resolve().parent.parent
 TPL = ROOT / "tools" / "site_template"
@@ -23,8 +30,11 @@ SERVICE_BLURBS = {
     "dance fitness": "Burn calories with music and movement.",
     "yoga": "Flexibility, balance and calm.",
     "nutrition consulting": "Diet guidance to match your goals.",
+    "cardio": "Treadmills, bikes and cardio training.",
+    "strength training": "Build strength with weights and machines.",
+    "boxing": "Boxing-based conditioning.",
 }
-GENERIC_BLURB = "Ask our team for details."
+STOP_WORDS = {"the", "a", "an", "and", "of", "by"}
 
 
 def e(s):
@@ -47,18 +57,26 @@ def _rgb(hexc):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def _on_accent(hexc):
+def _lum(rgb):
     def lin(v):
         v /= 255
         return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
-    r, g_, b = (lin(v) for v in _rgb(hexc))
-    lum = 0.2126 * r + 0.7152 * g_ + 0.0722 * b
-    return "#0b0c10" if lum > 0.32 else "#ffffff"
+    r, g, b = (lin(v) for v in rgb)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def _on_accent(hexc):
+    """Pick white or near-black text, whichever has the higher WCAG contrast against the accent."""
+    l = _lum(_rgb(hexc))
+    white = 1.05 / (l + 0.05)
+    dark = (l + 0.05) / (_lum((11, 12, 16)) + 0.05)
+    return "#ffffff" if white >= dark else "#0b0c10"
 
 
 def _initials(name):
-    words = name.split()
-    if words and len(words[0]) <= 3:
+    words = [re.sub(r"[^A-Za-z0-9]", "", w) for w in name.split()]
+    words = [w for w in words if w and w.lower() not in STOP_WORDS] or [w for w in words if w] or ["G"]
+    if len(words[0]) <= 3:
         return words[0].upper()
     return "".join(w[0] for w in words[:2]).upper()
 
@@ -68,134 +86,206 @@ ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
 
 
 def render(g):
-    img = g.get("images", {})
+    img = g.get("images") or {}
     name = g["name"]
     area, city = g["area"], g["city"]
     loc = f"{area}, {city}"
     phone = g.get("phone")
+    address = g.get("address")
     accent = g.get("accent", "#ff4d2e")
     ar, ag, ab = _rgb(accent)
     on_accent = _on_accent(accent)
-    services = g.get("services", [])
+    services = g.get("services") or []
+    blurbs = bool(g.get("blurbs"))
     rating, reviews = g.get("rating"), g.get("reviews")
-    published = str(g.get("status", "")).lower() == "delivered"
+    src = g.get("rating_source")
+    status = str(g.get("status", ""))
+    published = status.lower() == "delivered"
+    prospect = status.lower().startswith("prospect")
     maps_q = quote_plus(g.get("tagline_name") or f"{name} {area} {city}")
     maps_link = f"https://www.google.com/maps/search/?api=1&query={maps_q}"
     maps_embed = f"https://www.google.com/maps?q={maps_q}&output=embed"
     tel_href = f"tel:{tel(phone)}" if phone else ""
     wa_href = f"https://wa.me/{tel(phone).lstrip('+')}" if phone else ""
     initials = _initials(name)
-    lead = (f"A {area} gym, rated {rating} on Google by {reviews} members." if rating and reviews else g["about"])
+    has_hero_img = bool(img.get("hero"))
+    lead = g.get("lead") or f"A gym on {area}, {city}."
+    rate_label = f"{src} rating" if src else "Rating"
+    rate_from = f"Rating from {reviews} reviews" + (f" on {src}" if src else "")
 
-    favicon = ("data:image/svg+xml," + quote_plus(
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="{accent}"/>'
-        f'<text x="32" y="42" font-family="Arial" font-weight="800" font-size="{26 if len(initials) < 3 else 20}" text-anchor="middle" fill="{on_accent}">{initials}</text></svg>'))
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="{accent}"/>'
+           f'<text x="32" y="42" font-family="Arial" font-weight="800" font-size="{26 if len(initials) < 3 else 20}" '
+           f'text-anchor="middle" fill="{on_accent}">{html.escape(initials, quote=False)}</text></svg>')
+    favicon = "data:image/svg+xml," + quote(svg, safe="")
 
-    ld = {"@context": "https://schema.org", "@type": "ExerciseGym", "name": name,
-          "address": {"@type": "PostalAddress", "streetAddress": g["address"], "addressLocality": city, "addressCountry": "IN"}}
-    if phone:
-        ld["telephone"] = tel(phone)
-    ld_json = json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
-
-    desc = f"{name} in {loc}." + (f" Rated {rating} on Google." if rating else "") + (f" {', '.join(services[:5])}." if services else "")
+    title = f"{name} | Design preview (unofficial)" if prospect else f"{name} | Gym in {loc}"
+    desc = (f"Unofficial design preview for {name}, {loc}." if prospect else
+            f"{name} in {loc}." + (f" {', '.join(services[:5])}." if services else ""))
     robots = "" if published else '  <meta name="robots" content="noindex, nofollow">\n'
 
-    preview_bar = (f'<div class="preview-bar"><strong>Design preview</strong> &mdash; not the official website of {e(name)}.</div>'
-                   if str(g.get("status", "")).lower().startswith("prospect") else "")
+    ld_block = ""
+    if not prospect:
+        ld = {"@context": "https://schema.org", "@type": "ExerciseGym", "name": name,
+              "address": {"@type": "PostalAddress", "addressLocality": city, "addressCountry": "IN"}}
+        if address:
+            ld["address"]["streetAddress"] = address
+        if phone:
+            ld["telephone"] = tel(phone)
+        ld_block = '  <script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>\n"
 
-    nav = ['<a href="#about">About</a>']
+    preview_bar = (f'<div class="preview-bar"><strong>Design preview</strong> &mdash; unofficial, not the website of {e(name)}.</div>'
+                   if prospect else "")
+
+    # nav
+    nav = []
+    if g.get("about"):
+        nav.append('<a href="#about">About</a>')
     if services:
         nav.append('<a href="#services">Services</a>')
-    if img.get("team"):
+    team = img.get("team") or []
+    if team:
         nav.append('<a href="#gallery">Gallery</a>')
     nav.append('<a href="#contact">Contact</a>')
     nav_html = "\n        ".join(nav)
     nav_cta = (f'<a class="btn sm nav-cta" href="{tel_href}">Call now</a>' if phone
                else '<a class="btn sm nav-cta" href="#contact">Visit us</a>')
 
-    hero_img = (f'<img class="hero-img" src="assets/images/{e(img["hero"])}" alt="" fetchpriority="high">'
-                if img.get("hero") else "")
-    hero_cls = "hero" if img.get("hero") else "hero noimg"
+    # hero
+    hero_img = (f'<img class="hero-img" src="assets/images/{e(img["hero"])}" alt="" fetchpriority="high">' if has_hero_img else "")
     primary = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>' if phone
                else f'<a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a>')
-    secondary = f'<a class="btn ghost" href="#about">Explore</a>' if not services else '<a class="btn ghost" href="#services">Our services</a>'
+    second_href = "#services" if services else ("#about" if g.get("about") else "#contact")
+    second_txt = "Services" if services else ("About" if g.get("about") else "Contact")
+    secondary = f'<a class="btn ghost" href="{second_href}">{second_txt}</a>'
 
-    stats = []
-    if rating:
-        stats.append(f'<div class="stat reveal"><b><span class="star">&#9733;</span> {rating}</b><span>Google rating</span></div>')
-    if reviews:
-        stats.append(f'<div class="stat reveal"><b>{reviews}+</b><span>Member reviews</span></div>')
-    stats.append(f'<div class="stat reveal"><b>{e(area)}</b><span>{e(city)}</span></div>')
-    stats_html = "\n        ".join(stats)
+    hero_side = ""
+    if not has_hero_img and rating and reviews:
+        pct = max(0, min(100, round(float(rating) / 5 * 100)))
+        hero_side = (f'<div class="rating-card"><div class="big">{rating}</div>'
+                     f'<div class="stars" style="--p:{pct}%" role="img" aria-label="Rated {rating} out of 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div>'
+                     f'<p>{e(rate_from)}</p></div>')
+    hero_cls = "hero" if has_hero_img else "hero noimg"
+    grid_cls = "hero-grid" if hero_side else "hero-grid one"
+
+    # stats strip: only on photo-hero sites (photo-less sites show the rating card instead)
+    stats_html = ""
+    if has_hero_img:
+        stats = []
+        if rating:
+            stats.append(f'<div class="stat reveal"><b><span class="star" aria-hidden="true">&#9733;</span> {rating}</b><span>{e(rate_label)}</span></div>')
+        if reviews:
+            stats.append(f'<div class="stat reveal"><b>{reviews}</b><span>Reviews</span></div>')
+        stats.append(f'<div class="stat reveal"><b>{e(area)}</b><span>{e(city)}</span></div>')
+        if len(stats) >= 2:
+            stats_html = '    <div class="stats"><div class="container stats-grid">\n        ' + "\n        ".join(stats) + "\n    </div></div>"
 
     ticker = ""
-    if len(services) >= 3:
-        spans = "".join(f"<span>{e(s)}</span>" for s in (services * (2 if len(services) > 5 else 3)))
-        ticker = f'<div class="ticker" aria-hidden="true"><div class="ticker-track">{spans}{spans}</div></div>'
+    if len(services) >= 5:
+        reps = max(2, -(-24 // len(services)))
+        spans = "".join(f"<span>{e(s)}</span>" for s in services * reps)
+        ticker = f'    <div class="ticker" aria-hidden="true"><div class="ticker-track">{spans}{spans}</div></div>'
 
-    about_side = (f'<img class="about-img reveal" src="assets/images/{e(img["about"])}" alt="Inside {e(name)}" loading="lazy">'
-                  if img.get("about") else
-                  (f'<div class="rating-card reveal"><div class="big">{rating}</div><div class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>'
-                   f'<p>Google rating from {reviews} reviews</p></div>' if rating and reviews else ""))
+    sections = []
+    if g.get("about"):
+        side = (f'<img class="about-img reveal" src="assets/images/{e(img["about"])}" alt="Inside {e(name)}" loading="lazy">'
+                if img.get("about") else "")
+        cls = "container about" if side else "container about solo"
+        sections.append(f'''    <section id="about" class="section%%ALT%%">
+      <div class="{cls}">
+        <div class="reveal">
+          <span class="kicker">About</span>
+          <h2>{e(name)}</h2>
+          <p>{e(g["about"])}</p>
+        </div>
+        {side}
+      </div>
+    </section>''')
 
-    services_html = ""
     if services:
-        cards = "\n".join(
-            f'        <article class="card reveal"><span class="num" aria-hidden="true">{i:02d}</span><h3>{e(sv)}</h3>'
-            f'<p>{e(SERVICE_BLURBS.get(sv.lower(), GENERIC_BLURB))}</p></article>'
-            for i, sv in enumerate(services, 1))
-        services_html = f'''
-    <section id="services" class="section alt">
+        def card(i, sv):
+            b = SERVICE_BLURBS.get(sv.lower()) if blurbs else None
+            return (f'        <article class="card reveal"><span class="num" aria-hidden="true">{i:02d}</span><h3>{e(sv)}</h3>'
+                    + (f'<p>{e(b)}</p>' if b else "") + '</article>')
+        cards = "\n".join(card(i, sv) for i, sv in enumerate(services, 1))
+        sections.append(f'''    <section id="services" class="section%%ALT%%">
       <div class="container">
-        <div class="section-head reveal"><span class="kicker">What we offer</span><h2>Train your way</h2></div>
+        <div class="section-head reveal"><span class="kicker">What&rsquo;s on offer</span><h2>Services</h2></div>
         <div class="cards">
 {cards}
         </div>
       </div>
-    </section>
-'''
+    </section>''')
 
-    gallery_html = ""
-    if img.get("team"):
-        figs = "\n".join(f'          <figure class="reveal"><img src="assets/images/{e(t)}" alt="{e(name)} team and members" loading="lazy"></figure>' for t in img["team"])
-        gallery_html = f'''
-    <section id="gallery" class="section">
+    if team:
+        figs = []
+        for i, t in enumerate(team, 1):
+            f_, alt = (t, f"{name} photo {i} of {len(team)}") if isinstance(t, str) else (t["file"], t.get("alt") or f"{name} photo {i} of {len(team)}")
+            figs.append(f'          <figure class="reveal"><img src="assets/images/{e(f_)}" alt="{e(alt)}" loading="lazy"></figure>')
+        sections.append(f'''    <section id="gallery" class="section%%ALT%%">
       <div class="container">
-        <div class="section-head reveal"><span class="kicker">Our community</span><h2>The people behind the weights</h2></div>
+        <div class="section-head reveal"><span class="kicker">Gallery</span><h2>The people and the floor</h2></div>
         <div class="gallery">
-{figs}
+{chr(10).join(figs)}
         </div>
       </div>
-    </section>
-'''
+    </section>''')
 
     band_btns = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>' if phone
-                 else f'<a class="btn" href="#contact">{ICON_PIN}Find us</a>')
-    band_p = "Ask about current membership offers." if phone else "Drop in to ask about current membership offers."
+                 else f'<a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Find us</a>')
+    band_p = "Call to ask about membership." if phone else "Find the gym on the map."
+    sections.append(f'''    <section class="section%%ALT%%">
+      <div class="container">
+        <div class="band reveal">
+          <div><h2>Ready to start?</h2><p>{band_p}</p></div>
+          <div class="cta">{band_btns}</div>
+        </div>
+      </div>
+    </section>''')
 
-    hours_html = ""
+    info = []
+    if address:
+        info.append(f'<div><dt>Address</dt><dd>{e(address)}</dd></div>')
     if g.get("hours"):
         rows = "\n".join(f'              <li><span>{e(h["days"])}</span><span>{e(h["time"])}</span></li>' for h in g["hours"])
-        hours_html = f'<div><dt>Hours</dt><dd><ul class="hours">\n{rows}\n            </ul></dd></div>'
-    phone_html = (f'<div><dt>Phone</dt><dd><a class="link" href="{tel_href}">{e(phone)}</a></dd></div>' if phone else "")
+        info.append(f'<div><dt>Hours</dt><dd><ul class="hours">\n{rows}\n            </ul></dd></div>')
+    if phone:
+        info.append(f'<div><dt>Phone</dt><dd><a class="link" href="{tel_href}">{e(phone)}</a></dd></div>')
     contact_btns = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
                     f'<a class="btn ghost" target="_blank" rel="noopener" href="{wa_href}">WhatsApp</a>' if phone else "")
     contact_btns += f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>'
+    sections.append(f'''    <section id="contact" class="section%%ALT%%">
+      <div class="container">
+        <div class="section-head reveal"><span class="kicker">Find us</span><h2>Visit {e(name)}</h2></div>
+        <div class="contact">
+          <div class="info reveal">
+            <dl>
+              {chr(10).join("              " + x if i else x for i, x in enumerate(info))}
+            </dl>
+            <div class="cta">{contact_btns}</div>
+          </div>
+          <div class="map reveal"><iframe title="Map to {e(name)}" src="{maps_embed}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+        </div>
+      </div>
+    </section>''')
+    sections_html = "\n\n".join(s.replace("%%ALT%%", " alt" if i % 2 == 1 else "") for i, s in enumerate(sections))
 
     mobile_bar = (f'<div class="mobile-bar"><a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
                   f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a></div>' if phone else
                   f'<div class="mobile-bar"><a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a></div>')
+
+    footer_p = (f'<p>Unofficial design preview of {e(name)} &mdash; not the gym&rsquo;s website.</p>' if prospect
+                else f'<p>&copy; <span id="year"></span> {e(name)}, {e(city)}</p>')
 
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{e(name)} | Gym in {e(loc)}</title>
+  <title>{e(title)}</title>
   <meta name="description" content="{e(desc)}">
 {robots}  <meta name="theme-color" content="#08090c">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="{e(name)} | Gym in {e(loc)}">
+  <meta property="og:title" content="{e(title)}">
   <meta property="og:description" content="{e(desc)}">
   <link rel="icon" href="{favicon}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -203,84 +293,49 @@ def render(g):
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>:root{{--accent:{accent};--accent-rgb:{ar},{ag},{ab};--on-accent:{on_accent}}}</style>
-  <script>document.documentElement.classList.add("js")</script>
-  <script type="application/ld+json">{ld_json}</script>
-</head>
+  <script>document.documentElement.classList.add("js");setTimeout(function(){{if(!window.__gymOk)document.documentElement.classList.add("reveal-all")}},2500)</script>
+{ld_block}</head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+  <div class="top">
   {preview_bar}
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="#top" aria-label="{e(name)} home"><span class="brand-mark">{e(initials)}</span>{e(name)}</a>
+      <a class="brand" href="#" aria-label="{e(name)} home"><span class="brand-mark">{e(initials)}</span>{e(name)}</a>
+      <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
       <nav id="nav-links" class="nav-links" aria-label="Main">
         {nav_html}
       </nav>
       {nav_cta}
-      <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
     </div>
   </header>
+  </div>
 
   <main id="main">
-    <section id="top" class="{hero_cls}">
+    <section class="{hero_cls}">
       {hero_img}
-      <div class="container">
-        <span class="pill"><i></i>{e(loc)}</span>
-        <h1>Stronger every day at <em>{e(name)}</em></h1>
-        <p class="lead">{e(lead)}</p>
-        <div class="cta">
-          {primary}
-          {secondary}
-        </div>
-      </div>
-    </section>
-
-    <div class="stats"><div class="container stats-grid">
-        {stats_html}
-    </div></div>
-    {ticker}
-
-    <section id="about" class="section">
-      <div class="container about">
-        <div class="reveal">
-          <span class="kicker">About</span>
-          <h2>{e(name)}</h2>
-          <p>{e(g["about"])}</p>
-        </div>
-        {about_side}
-      </div>
-    </section>
-{services_html}{gallery_html}
-    <section class="section{" alt" if not services else ""}">
-      <div class="container">
-        <div class="band reveal">
-          <div><h2>Ready to start?</h2><p>{band_p}</p></div>
-          <div class="cta">{band_btns}</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section{" alt" if services else ""}">
-      <div class="container">
-        <div class="section-head reveal"><span class="kicker">Find us</span><h2>Visit {e(name)}</h2></div>
-        <div class="contact">
-          <div class="info reveal">
-            <dl>
-              <div><dt>Address</dt><dd>{e(g["address"])}</dd></div>
-              {hours_html}
-              {phone_html}
-            </dl>
-            <div class="cta">{contact_btns}</div>
+      <div class="container {grid_cls}">
+        <div>
+          <span class="pill"><i></i>{e(loc)}</span>
+          <h1>Stronger every day at <em>{e(name)}</em></h1>
+          <p class="lead">{e(lead)}</p>
+          <div class="cta">
+            {primary}
+            {secondary}
           </div>
-          <div class="map reveal"><iframe title="Map to {e(name)}" src="{maps_embed}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
         </div>
+        {hero_side}
       </div>
     </section>
+{stats_html}
+{ticker}
+
+{sections_html}
   </main>
 
   <footer>
     <div class="container">
-      {"<p>Design preview &mdash; not the official website of " + e(name) + ".</p>" if preview_bar else ""}
-      <p>&copy; <span id="year"></span> {e(name)}, {e(city)}</p>
+      {footer_p}
     </div>
   </footer>
   {mobile_bar}
@@ -292,29 +347,26 @@ def render(g):
 
 def update_root_readme(g):
     p = ROOT / "README.md"
-    text = p.read_text()
-    row_link = f'[sites/{g["slug"]}](sites/{g["slug"]})'
-    lines = text.split("\n")
-    out, found, last_row = [], False, None
-    for i, ln in enumerate(lines):
+    lines = p.read_text().split("\n")
+    link = f'[sites/{g["slug"]}](sites/{g["slug"]})'
+    live = g.get("live_url") or "-"
+    live_cell = f"[link]({live})" if live != "-" else "-"
+    out, found = [], False
+    for ln in lines:
         if ln.startswith("| - | _none yet_"):
             continue
         if f"sites/{g['slug']})" in ln:
             m = re.match(r"\| (\d+) \|", ln)
-            num = m.group(1) if m else "?"
-            ln = f'| {num} | {g["name"]} | {row_link} | - | {g.get("status", "Draft")} |'
+            ln = f'| {m.group(1) if m else "?"} | {g["name"]} | {link} | {live_cell} | {g.get("status", "Draft")} |'
             found = True
-        if ln.startswith("| ") and re.match(r"\| \d+ \|", ln):
-            last_row = len(out)
         out.append(ln)
     if not found:
         nums = [int(m.group(1)) for ln in out if (m := re.match(r"\| (\d+) \|", ln))]
-        row = f'| {max(nums, default=0) + 1} | {g["name"]} | {row_link} | - | {g.get("status", "Draft")} |'
-        if last_row is None:
+        row = f'| {max(nums, default=0) + 1} | {g["name"]} | {link} | {live_cell} | {g.get("status", "Draft")} |'
+        idx = max((i for i, ln in enumerate(out) if re.match(r"\| \d+ \|", ln)), default=None)
+        if idx is None:
             idx = next(i for i, ln in enumerate(out) if ln.startswith("|---"))
-            out.insert(idx + 1, row)
-        else:
-            out.insert(last_row + 1, row)
+        out.insert(idx + 1, row)
     p.write_text("\n".join(out))
 
 
@@ -325,23 +377,25 @@ def build(slug):
         sys.exit(f"missing {cfg}")
     g = json.loads(cfg.read_text())
     g["slug"] = slug
-    (d / "assets" / "css").mkdir(parents=True, exist_ok=True)
-    (d / "assets" / "js").mkdir(parents=True, exist_ok=True)
-    (d / "assets" / "images").mkdir(parents=True, exist_ok=True)
+    for sub in ("css", "js", "images"):
+        (d / "assets" / sub).mkdir(parents=True, exist_ok=True)
     shutil.copy(TPL / "style.css", d / "assets" / "css" / "style.css")
     shutil.copy(TPL / "main.js", d / "assets" / "js" / "main.js")
     (d / "index.html").write_text(render(g))
     (d / "README.md").write_text(
-        f'# {g["name"]}\n\n- **Client / Gym:** {g["name"]}\n- **Location:** {g["address"]}\n'
+        f'# {g["name"]}\n\n- **Client / Gym:** {g["name"]}\n- **Location:** {g.get("address") or g["area"] + ", " + g["city"]}\n'
         + (f'- **Phone:** {g["phone"]}\n' if g.get("phone") else "")
-        + f'- **Stack:** HTML / CSS / JS (generated by `tools/generate.py` from `gym.json`)\n'
-        f'- **Live URL:** \n- **Status:** {g.get("status", "Draft")}\n')
+        + '- **Stack:** HTML / CSS / JS (generated by `tools/generate.py` from `gym.json`)\n'
+        f'- **Live URL:** {g.get("live_url", "")}\n- **Status:** {g.get("status", "Draft")}\n')
     update_root_readme(g)
     print("built", slug)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    args = sys.argv[1:]
+    if not args:
         sys.exit(__doc__)
-    for s in sys.argv[1:]:
+    if args == ["--all"]:
+        args = sorted(p.parent.name for p in (ROOT / "sites").glob("*/gym.json"))
+    for s in args:
         build(s)

@@ -35,10 +35,19 @@
     "hero": "gym-floor-2.webp",
     "about": "gym-floor-1.webp",
     "team": [
-      "trainers.webp",
-      "team-group.webp"
+      {
+        "file": "trainers.webp",
+        "alt": "S3 Fitness trainers standing together in the gym"
+      },
+      {
+        "file": "team-group.webp",
+        "alt": "Members and trainers under the S3 Fitness sign"
+      }
     ]
   },
   "status": "Draft",
-  "accent": "#ff4d2e"
+  "accent": "#ff4d2e",
+  "rating_source": "Google",
+  "blurbs": true,
+  "live_url": "https://s3-fitness-bhopal-demo.netlify.app"
 }

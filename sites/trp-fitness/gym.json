@@ -9,5 +9,6 @@
   "reviews": 120,
   "accent": "#ffb020",
   "images": {},
-  "status": "Prospect draft"
+  "status": "Prospect draft",
+  "rating_source": "Fitpass"
 }

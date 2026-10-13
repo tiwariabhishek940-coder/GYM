@@ -10,5 +10,6 @@
   "services": [],
   "images": {},
   "status": "Prospect draft",
-  "accent": "#ff8a3d"
+  "accent": "#ff8a3d",
+  "rating_source": "LyfSkills"
 }

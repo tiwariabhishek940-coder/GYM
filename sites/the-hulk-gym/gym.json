@@ -10,5 +10,6 @@
   "services": [],
   "images": {},
   "status": "Prospect draft",
-  "accent": "#9be15d"
+  "accent": "#9be15d",
+  "rating_source": "Explurger"
 }

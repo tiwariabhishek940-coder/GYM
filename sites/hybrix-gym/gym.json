@@ -10,5 +10,6 @@
   "services": [],
   "images": {},
   "status": "Prospect draft",
-  "accent": "#f472b6"
+  "accent": "#f472b6",
+  "rating_source": "Fitpass"
 }

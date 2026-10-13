@@ -112,7 +112,9 @@ def render(g):
     wa_href = f"https://wa.me/{tel(phone).lstrip('+')}" if phone else ""
     initials = _initials(name)
     has_hero_img = bool(img.get("hero"))
-    lead = g.get("lead") or f"A gym on {area}, {city}."
+    lead = g.get("lead")
+    whatsapp = bool(g.get("whatsapp")) and bool(phone)
+    lead_html = f'<p class="lead">{e(lead)}</p>' if lead else ""
     team = img.get("team") or []
 
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="{accent}"/>'
@@ -135,7 +137,8 @@ def render(g):
             ld["telephone"] = tel(phone)
         ld_block = '  <script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>\n"
 
-    preview_bar = (f'<div class="preview-bar"><strong>Design preview</strong> &mdash; unofficial, not the website of {e(name)}.</div>'
+    preview_bar = (f'<div class="preview-bar" role="region" aria-label="Design preview notice"><strong>Design preview</strong>'
+                   f'<span class="pb-long"> &mdash; unofficial, not the website of {e(name)}.</span><span class="pb-short"> &middot; unofficial</span></div>'
                    if prospect else "")
 
     nav = []
@@ -147,6 +150,10 @@ def render(g):
         nav.append('<a href="#gallery">Gallery</a>')
     nav.append('<a href="#visit">Visit</a>')
     nav_html = "\n        ".join(nav)
+    has_menu = len(nav) > 1
+    menu_html = ('<button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>\n'
+                 f'      <nav id="nav-links" class="nav-links" aria-label="Main">\n        {nav_html}\n      </nav>') if has_menu else ""
+    sparse = not (services or g.get("about") or team)
     nav_cta = (f'<a class="btn sm nav-cta" href="{tel_href}">Call now</a>' if phone
                else '<a class="btn sm nav-cta" href="#visit">Visit us</a>')
 
@@ -157,7 +164,7 @@ def render(g):
                else f'<a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a>')
     second_href = "#services" if services else ("#about" if g.get("about") else "#visit")
     second_txt = "See services" if services else ("About" if g.get("about") else "Visit")
-    secondary = f'<a class="btn ghost" href="{second_href}">{second_txt}</a>'
+    secondary = "" if sparse else f'<a class="btn ghost" href="{second_href}">{second_txt}</a>'
 
     pass_card = ""
     if rating and reviews:
@@ -193,7 +200,7 @@ def render(g):
         for i, sv in enumerate(services, 1):
             b = SERVICE_BLURBS.get(sv.lower()) if blurbs else None
             rows.append(f'        <li class="reveal{"" if b else " nop"}"><span class="no" aria-hidden="true">{i:02d}</span><h3>{e(sv)}</h3>'
-                        + (f'<p>{e(b)}</p>' if b else "") + f'<span class="go">{ICON_ARROW}</span></li>')
+                        + (f'<p>{e(b)}</p>' if b else "") + f'<a class="go" href="#visit" aria-label="Contact {e(name)} about {e(sv)}">{ICON_ARROW}</a></li>')
         sections.append(f'''    <section id="services" class="section%%ALT%%">
       <div class="wrap">
         <div class="sec-head reveal"><h2 class="disp h2">Train <em class="serif">your</em> way</h2><span class="eyebrow">What&rsquo;s on offer</span></div>
@@ -221,7 +228,8 @@ def render(g):
     band_btns = (f'<a class="btn dark" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>'
                  f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">Directions</a>' if phone
                  else f'<a class="btn dark" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>')
-    sections.append(f'''    <section class="section" style="padding-top:0">
+    if not sparse:
+        sections.append(f'''    <section class="section">
       <div class="wrap">
         <div class="cta-block reveal">
           <h2 class="disp">Come see it <em class="serif">in person.</em></h2>
@@ -232,17 +240,22 @@ def render(g):
 
     info = []
     if address:
-        info.append(f'<div><dt>Address</dt><dd>{e(address)}</dd></div>')
+        note = '<span class="note">As listed publicly, not yet confirmed with the gym.</span>' if prospect else ""
+        info.append(f'<div><dt>Address</dt><dd>{e(address)}{note}</dd></div>')
+    if prospect and rating and reviews:
+        info.append(f'<div><dt>Rating</dt><dd>{rating} from {reviews} reviews<span class="note">{"Source: " + e(src) + " listing, not verified." if src else "From a public listing, not verified."}</span></dd></div>')
     if g.get("hours"):
         hrows = "\n".join(f'              <li><span>{e(h["days"])}</span><span>{e(h["time"])}</span></li>' for h in g["hours"])
         info.append(f'<div><dt>Hours</dt><dd><ul class="hours">\n{hrows}\n            </ul></dd></div>')
     if phone:
         info.append(f'<div><dt>Phone</dt><dd><a class="link" href="{tel_href}">{e(phone)}</a></dd></div>')
     contact_btns = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
-                    f'<a class="btn ghost" target="_blank" rel="noopener" href="{wa_href}">WhatsApp</a>' if phone else "")
-    contact_btns += f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>'
+                    f'<a class="btn ghost" target="_blank" rel="noopener" href="{wa_href}">WhatsApp</a>' if whatsapp else "")
+    if phone and not whatsapp:
+        contact_btns = f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
+    contact_btns += f'<a class="btn{" ghost" if phone else ""}" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>'
     info_html = "\n              ".join(info)
-    sections.append(f'''    <section id="visit" class="section" style="padding-top:0">
+    sections.append(f'''    <section id="visit" class="section">
       <div class="wrap">
         <div class="sec-head reveal"><h2 class="disp h2">Visit <em class="serif">us</em></h2><span class="eyebrow">Find us</span></div>
         <div class="visit">
@@ -259,9 +272,9 @@ def render(g):
     # services get the tinted band; the rest stay on the base colour
     sections_html = "\n\n".join(s.replace("%%ALT%%", " alt" if 'id="services"' in s else "") for s in sections)
 
-    mobile_bar = (f'<div class="mobile-bar"><a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
-                  f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a></div>' if phone else
-                  f'<div class="mobile-bar"><a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a></div>')
+    mobile_bar = (f'<nav class="mobile-bar" aria-label="Quick contact"><a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
+                  f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a></nav>' if phone else
+                  f'<nav class="mobile-bar" aria-label="Quick contact"><a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a></nav>')
 
     footer_p = (f'<p>Unofficial design preview of {e(name)} &mdash; not the gym&rsquo;s website.</p>' if prospect
                 else f'<p>&copy; <span id="year"></span> {e(name)}, {e(city)}</p>')
@@ -290,12 +303,9 @@ def render(g):
   <div class="top">
   {preview_bar}
   <header class="site-header">
-    <div class="wrap nav">
-      <a class="brand" href="#" aria-label="{e(name)} home"><span class="brand-mark">{e(initials)}</span>{e(name)}</a>
-      <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
-      <nav id="nav-links" class="nav-links" aria-label="Main">
-        {nav_html}
-      </nav>
+    <div class="wrap nav{"" if has_menu else " nomenu"}">
+      <a class="brand" href="#" aria-label="{e(name)} home"><span class="brand-mark">{e(initials)}</span><span class="brand-name">{e(name)}</span></a>
+      {menu_html}
       {nav_cta}
     </div>
   </header>
@@ -307,8 +317,8 @@ def render(g):
       <div class="{grid_cls}">
         <div>
           <span class="pill"><i></i>{e(loc)}</span>
-          <h1 class="disp h1">Stronger<br><em class="serif">every</em> day.</h1>
-          <p class="lead">{e(lead)}</p>
+          <h1 class="disp h1"><span class="sr">{e(name)}: </span>Stronger<br><em class="serif">every</em> day.</h1>
+          {lead_html}
           <div class="cta">
             {primary}
             {secondary}

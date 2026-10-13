@@ -30,6 +30,13 @@
     });
   }
 
+  var heroCta = document.querySelector(".hero .cta");
+  if (heroCta && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) {
+      document.body.classList.toggle("bar-hidden", es[0].isIntersecting);
+    }).observe(heroCta);
+  }
+
   var items = document.querySelectorAll(".reveal");
   if (!("IntersectionObserver" in window)) { items.forEach(function (el) { el.classList.add("in"); }); return; }
   var io = new IntersectionObserver(function (entries) {

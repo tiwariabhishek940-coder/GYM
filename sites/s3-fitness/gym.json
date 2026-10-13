@@ -49,5 +49,7 @@
   "accent": "#ff5a36",
   "rating_source": "Google",
   "blurbs": true,
-  "live_url": "https://s3-fitness-bhopal-demo.netlify.app"
+  "live_url": "https://s3-fitness-bhopal-demo.netlify.app",
+  "lead": "Premium fitness gym with high-quality equipment and diverse training classes.",
+  "whatsapp": true
 }

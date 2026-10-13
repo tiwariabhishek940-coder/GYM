@@ -59,9 +59,22 @@ def render(g):
                  if img.get("about") else "")
     about_body = f'<div class="about"><p>{e(g["about"])}</p>{about_img}</div>' if about_img else f'<p>{e(g["about"])}</p>'
 
+    services = g.get("services", [])
     cards = "\n".join(
         f'        <div class="card"><h3>{e(s)}</h3><p>{e(SERVICE_BLURBS.get(s.lower(), GENERIC_BLURB))}</p></div>'
-        for s in g.get("services", []))
+        for s in services)
+    services_section = f'''
+    <section id="services" class="section alt">
+      <h2>Services</h2>
+      <div class="grid">
+{cards}
+      </div>
+    </section>
+''' if services else ""
+    services_nav = '\n      <a href="#services">Services</a>' if services else ""
+    preview = ('<p class="preview">Design preview &mdash; not the official website of %s.</p>' % e(name)
+               if str(g.get("status", "")).lower().startswith("prospect") else "")
+    plans_note = "Call us for current membership offers." if phone else "Visit us for current membership offers."
 
     team_imgs = img.get("team", [])
     team = ""
@@ -91,15 +104,14 @@ def render(g):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{e(name)} | {e(loc)}</title>
-  <meta name="description" content="{e(name)} in {e(loc)}. {e(', '.join(g.get('services', [])[:5]))}.">
+  <meta name="description" content="{e(name)} in {e(loc)}.{' ' + e(', '.join(services[:5])) + '.' if services else ''}">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header class="nav">
     <a class="logo" href="#top">{e(name)}</a>
     <nav>
-      <a href="#about">About</a>
-      <a href="#services">Services</a>{team_nav}
+      <a href="#about">About</a>{services_nav}{team_nav}
       <a href="#plans">Plans</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -112,7 +124,7 @@ def render(g):
       <p class="lead">Strength, cardio and classes under one roof, with trainers who keep you on track.</p>
       <div class="cta">
         {primary_cta}
-        <a class="btn ghost" href="#services">Explore services</a>
+        <a class="btn ghost" href="{"#services" if services else "#about"}">{"Explore services" if services else "About us"}</a>
       </div>
       {rating}
     </section>
@@ -122,16 +134,10 @@ def render(g):
       {about_body}
     </section>
 
-    <section id="services" class="section alt">
-      <h2>Services</h2>
-      <div class="grid">
-{cards}
-      </div>
-    </section>
-{team}
+{services_section}{team}
     <section id="plans" class="section">
       <h2>Membership plans</h2>
-      <p class="note">Flexible monthly, quarterly and yearly memberships. Call us for current offers.</p>
+      <p class="note">{plans_note}</p>
       {plans_btn}
     </section>
 
@@ -144,7 +150,7 @@ def render(g):
     </section>
   </main>
 
-  <footer>&copy; <span id="year"></span> {e(name)}, {e(g["city"])}</footer>
+  <footer>{preview}&copy; <span id="year"></span> {e(name)}, {e(g["city"])}</footer>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

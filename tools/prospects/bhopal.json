@@ -16,7 +16,8 @@
         "rating": 4.7,
         "reviews": 158,
         "hours": "6 AM - 10 PM",
-        "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523"
+        "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523",
+        "status": "prospect draft (sites/raiden-gym)"
       },
       {
         "name": "The Hulk Gym",
@@ -24,7 +25,8 @@
         "phone": null,
         "rating": 4.5,
         "reviews": 230,
-        "source": "https://www.explurger.com/pd/1d774wia0cpa4kiep"
+        "source": "https://www.explurger.com/pd/1d774wia0cpa4kiep",
+        "status": "prospect draft (sites/the-hulk-gym)"
       },
       {
         "name": "Hybrix",
@@ -32,7 +34,8 @@
         "phone": null,
         "rating": 5.0,
         "reviews": 47,
-        "source": "https://fitpass.co.in/studio/hybrix-kolar-road-bhopal"
+        "source": "https://fitpass.co.in/studio/hybrix-kolar-road-bhopal",
+        "status": "prospect draft (sites/hybrix-gym)"
       },
       {
         "name": "Raw Fit Fitness Center",
@@ -40,7 +43,8 @@
         "phone": null,
         "rating": 4.6,
         "reviews": 12,
-        "source": "https://fitpass.co.in/studio/raw-fit-fitness-center-kolar-road-bhopal"
+        "source": "https://fitpass.co.in/studio/raw-fit-fitness-center-kolar-road-bhopal",
+        "status": "prospect draft (sites/raw-fit-fitness-center)"
       }
     ],
     "MP Nagar": [
@@ -224,7 +228,8 @@
         "phone": null,
         "rating": 4.9,
         "reviews": 262,
-        "source": "https://discover.lyfskills.com/gyms/listing/11892"
+        "source": "https://discover.lyfskills.com/gyms/listing/11892",
+        "status": "prospect draft (sites/as-fitness-terminus)"
       },
       {
         "name": "Cult Gym Gulmohar Colony",

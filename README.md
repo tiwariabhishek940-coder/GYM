@@ -25,6 +25,10 @@ GYM/
 | 5 | Muscles Velocity Gym | [sites/muscles-velocity-gym](sites/muscles-velocity-gym) | - | Prospect draft |
 | 6 | Forge Fitness Gym | [sites/forge-fitness-gym](sites/forge-fitness-gym) | - | Prospect draft |
 | 7 | JUNA | [sites/juna-gym](sites/juna-gym) | - | Prospect draft |
+| 8 | Raiden Gym | [sites/raiden-gym](sites/raiden-gym) | - | Prospect draft |
+| 9 | The Hulk Gym | [sites/the-hulk-gym](sites/the-hulk-gym) | - | Prospect draft |
+| 10 | Hybrix | [sites/hybrix-gym](sites/hybrix-gym) | - | Prospect draft |
+| 11 | Raw Fit Fitness Center | [sites/raw-fit-fitness-center](sites/raw-fit-fitness-center) | - | Prospect draft |
 
 ## Adding a new site
 

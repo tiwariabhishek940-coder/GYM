@@ -1,0 +1,23 @@
+{
+  "slug": "s3-fitness",
+  "name": "S3 Fitness",
+  "tagline_name": "S3 Fitness Gym Bhopal",
+  "area": "Kolar Road",
+  "city": "Bhopal",
+  "address": "2nd Floor, Sahu Market, in front of Kolar Road, Priyanka Nagar, Lalita Nagar, Kolar Rd, Bhopal, Madhya Pradesh 462042",
+  "phone": "074009 79269",
+  "rating": 5.0,
+  "reviews": 99,
+  "hours": [
+    {"days": "Monday – Saturday", "time": "6–11 am · 5–10 pm"},
+    {"days": "Sunday", "time": "Closed"}
+  ],
+  "services": ["Weight training", "Personal training", "Crossfit", "HIIT", "Cycling", "Aerobics", "Zumba", "Dance fitness", "Yoga", "Nutrition consulting"],
+  "about": "A premium fitness gym with high-quality equipment and diverse training classes. Whether you are starting out or training for a goal, you get a spacious floor and a supportive community.",
+  "images": {
+    "hero": "gym-floor-2.webp",
+    "about": "gym-floor-1.webp",
+    "team": ["trainers.webp", "team-group.webp"]
+  },
+  "status": "Draft"
+}

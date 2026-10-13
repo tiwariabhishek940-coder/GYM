@@ -1,0 +1,27 @@
+{
+  "city": "Bhopal",
+  "note": "Found via web search of aggregator listings (Fitpass, LyfSkills, Yappe). Unverified: confirm phone/hours with the gym before building or publishing. null = not found.",
+  "areas": {
+    "Kolar Road": [
+      {"name": "S3 Fitness", "status": "site built (sites/s3-fitness)", "rating": 5.0, "reviews": 99},
+      {"name": "Raiden Gym", "address": "Plot No. 1, Sector C, K K Nagar, Sarvdharm, Kolar Road, Bhopal 462042", "phone": "+91 70333 33807", "rating": 4.7, "reviews": 158, "hours": "6 AM - 10 PM", "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523"},
+      {"name": "The Hulk Gym", "address": "25, Kolar Road, Bairagarh Chichali, Bhopal", "phone": null, "rating": 4.5, "reviews": 230, "source": "https://www.explurger.com/pd/1d774wia0cpa4kiep"},
+      {"name": "Hybrix", "address": null, "phone": null, "rating": 5.0, "reviews": 47, "source": "https://fitpass.co.in/studio/hybrix-kolar-road-bhopal"},
+      {"name": "Raw Fit Fitness Center", "address": null, "phone": null, "rating": 4.6, "reviews": 12, "source": "https://fitpass.co.in/studio/raw-fit-fitness-center-kolar-road-bhopal"}
+    ],
+    "MP Nagar": [
+      {"name": "The Max Fitness", "address": "Third Floor, Gurukripa Arcade, HIG-1, beside Parul Hospital, Shivaji Nagar, Bhopal 462016", "phone": null, "rating": 4.7, "reviews": 200, "source": "https://discover.lyfskills.com/gyms/listing/11909"},
+      {"name": "Flesh Fitness Club", "address": null, "phone": null, "rating": 4.5, "reviews": 10, "hours": "5:30 AM - 10 PM", "source": "https://fitpass.co.in/studio/flesh-fitness-club-mp-nagar-mp-nagar"}
+    ],
+    "Arera Colony": [
+      {"name": "JUNA", "address": "E-3/150, 10 Number Stop, Near Agarwal Hospital, Arera Colony, Bhopal 462016", "phone": "+91 95759 64444", "rating": 4.7, "reviews": 363, "source": "https://yappe.in/madhya-pradesh/bhopal/juna/123935"},
+      {"name": "Akhada The Fitness Planet", "address": "Sagar Tower, Ground floor, E-7/137, near 10 No. market, Arera Colony, Bhopal 462016", "phone": null, "rating": 5.0, "reviews": 55, "source": "https://discover.lyfskills.com/gyms/listing/12004"},
+      {"name": "BR Fitness", "address": "Above Indian Coffee House, Gulmohar Colony, E-8, Arera Colony, Bhopal 462039", "phone": null, "rating": 4.8, "reviews": 101, "source": "https://discover.lyfskills.com/gyms/listing/11917"},
+      {"name": "The Muscle Factory Gym", "address": null, "phone": null, "hours": "6 AM - 10 PM", "source": "https://fitpass.co.in/studio/the-muscle-factory-gym-arera-colony"}
+    ],
+    "Ayodhya Bypass": [
+      {"name": "Sky5 Fitness", "address": "Plot no 8&9, opposite Sagar Avenue, Ayodhya Bypass Road, Ayodhya Nagar, Bhopal 462022", "phone": "+91 99264 01265", "source": "https://yappe.in/madhya-pradesh/bhopal/sky5fitness/250217"}
+    ]
+  },
+  "todo_areas": ["Hoshangabad Road", "Shahpura", "Bairagarh", "Piplani", "Kolar (Lalita Nagar)", "Habibganj", "Ashoka Garden", "Katara Hills", "Awadhpuri", "Jahangirabad", "Old City / Bhopal Talkies"]
+}

@@ -31,3 +31,4 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.9rem}
 .team img{height:100%;object-fit:cover;max-height:520px}
 @media(max-width:700px){.about{grid-template-columns:1fr}}
 .hours{list-style:none;padding:0;max-width:420px;margin-bottom:12px}.hours li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid #2a2a30}
+.hero.noimg{background:radial-gradient(circle at 50% 0,#2a1410,var(--bg) 70%)}

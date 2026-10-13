@@ -18,7 +18,7 @@ GYM/
 
 | # | Gym | Folder | Live URL | Status |
 |---|-----|--------|----------|--------|
-| - | _none yet_ | - | - | - |
+| 1 | S3 Fitness | [sites/s3-fitness](sites/s3-fitness) | - | Draft |
 
 ## Adding a new site
 

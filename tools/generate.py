@@ -85,6 +85,9 @@ ICON_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
 
 
+ICON_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>'
+
+
 def render(g):
     img = g.get("images") or {}
     name = g["name"]
@@ -92,7 +95,7 @@ def render(g):
     loc = f"{area}, {city}"
     phone = g.get("phone")
     address = g.get("address")
-    accent = g.get("accent", "#ff4d2e")
+    accent = g.get("accent", "#d6ff4a")
     ar, ag, ab = _rgb(accent)
     on_accent = _on_accent(accent)
     services = g.get("services") or []
@@ -110,8 +113,7 @@ def render(g):
     initials = _initials(name)
     has_hero_img = bool(img.get("hero"))
     lead = g.get("lead") or f"A gym on {area}, {city}."
-    rate_label = f"{src} rating" if src else "Rating"
-    rate_from = f"Rating from {reviews} reviews" + (f" on {src}" if src else "")
+    team = img.get("team") or []
 
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="{accent}"/>'
            f'<text x="32" y="42" font-family="Arial" font-weight="800" font-size="{26 if len(initials) < 3 else 20}" '
@@ -136,83 +138,68 @@ def render(g):
     preview_bar = (f'<div class="preview-bar"><strong>Design preview</strong> &mdash; unofficial, not the website of {e(name)}.</div>'
                    if prospect else "")
 
-    # nav
     nav = []
     if g.get("about"):
         nav.append('<a href="#about">About</a>')
     if services:
         nav.append('<a href="#services">Services</a>')
-    team = img.get("team") or []
     if team:
         nav.append('<a href="#gallery">Gallery</a>')
-    nav.append('<a href="#contact">Contact</a>')
+    nav.append('<a href="#visit">Visit</a>')
     nav_html = "\n        ".join(nav)
     nav_cta = (f'<a class="btn sm nav-cta" href="{tel_href}">Call now</a>' if phone
-               else '<a class="btn sm nav-cta" href="#contact">Visit us</a>')
+               else '<a class="btn sm nav-cta" href="#visit">Visit us</a>')
 
     # hero
     hero_img = (f'<img class="hero-img" src="assets/images/{e(img["hero"])}" alt="" fetchpriority="high">' if has_hero_img else "")
+    hero_cls = "hero img" if has_hero_img else "hero"
     primary = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>' if phone
                else f'<a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Get directions</a>')
-    second_href = "#services" if services else ("#about" if g.get("about") else "#contact")
-    second_txt = "Services" if services else ("About" if g.get("about") else "Contact")
+    second_href = "#services" if services else ("#about" if g.get("about") else "#visit")
+    second_txt = "See services" if services else ("About" if g.get("about") else "Visit")
     secondary = f'<a class="btn ghost" href="{second_href}">{second_txt}</a>'
 
-    hero_side = ""
-    if not has_hero_img and rating and reviews:
+    pass_card = ""
+    if rating and reviews:
         pct = max(0, min(100, round(float(rating) / 5 * 100)))
-        hero_side = (f'<div class="rating-card"><div class="big">{rating}</div>'
+        tag = f"{src} rating" if src else "Rating"
+        meta = [f"<span><b>{reviews}</b> reviews</span>"]
+        if g.get("hours"):
+            h0 = g["hours"][0]
+            meta.append(f'<span>{e(h0["days"])}: {e(h0["time"])}</span>')
+        pass_card = (f'<aside class="pass reveal" aria-label="Rating"><div class="tag"><span>{e(tag)}</span><span>{e(area)}</span></div>'
+                     f'<div class="score">{rating}</div>'
                      f'<div class="stars" style="--p:{pct}%" role="img" aria-label="Rated {rating} out of 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div>'
-                     f'<p>{e(rate_from)}</p></div>')
-    hero_cls = "hero" if has_hero_img else "hero noimg"
-    grid_cls = "hero-grid" if hero_side else "hero-grid one"
-
-    # stats strip: only on photo-hero sites (photo-less sites show the rating card instead)
-    stats_html = ""
-    if has_hero_img:
-        stats = []
-        if rating:
-            stats.append(f'<div class="stat reveal"><b><span class="star" aria-hidden="true">&#9733;</span> {rating}</b><span>{e(rate_label)}</span></div>')
-        if reviews:
-            stats.append(f'<div class="stat reveal"><b>{reviews}</b><span>Reviews</span></div>')
-        stats.append(f'<div class="stat reveal"><b>{e(area)}</b><span>{e(city)}</span></div>')
-        if len(stats) >= 2:
-            stats_html = '    <div class="stats"><div class="container stats-grid">\n        ' + "\n        ".join(stats) + "\n    </div></div>"
-
-    ticker = ""
-    if len(services) >= 5:
-        reps = max(2, -(-24 // len(services)))
-        spans = "".join(f"<span>{e(s)}</span>" for s in services * reps)
-        ticker = f'    <div class="ticker" aria-hidden="true"><div class="ticker-track">{spans}{spans}</div></div>'
+                     f'<div class="meta">{"".join(meta)}</div></aside>')
+    grid_cls = "wrap hero-grid" if pass_card else "wrap hero-grid one"
 
     sections = []
     if g.get("about"):
-        side = (f'<img class="about-img reveal" src="assets/images/{e(img["about"])}" alt="Inside {e(name)}" loading="lazy">'
+        side = (f'<img class="shot tall reveal" src="assets/images/{e(img["about"])}" alt="Inside {e(name)}" loading="lazy">'
                 if img.get("about") else "")
-        cls = "container about" if side else "container about solo"
+        cls = "wrap about" if side else "wrap about solo"
         sections.append(f'''    <section id="about" class="section%%ALT%%">
       <div class="{cls}">
         <div class="reveal">
-          <span class="kicker">About</span>
-          <h2>{e(name)}</h2>
-          <p>{e(g["about"])}</p>
+          <span class="eyebrow">About</span>
+          <p class="statement">{e(g["about"])}</p>
         </div>
         {side}
       </div>
     </section>''')
 
     if services:
-        def card(i, sv):
+        rows = []
+        for i, sv in enumerate(services, 1):
             b = SERVICE_BLURBS.get(sv.lower()) if blurbs else None
-            return (f'        <article class="card reveal"><span class="num" aria-hidden="true">{i:02d}</span><h3>{e(sv)}</h3>'
-                    + (f'<p>{e(b)}</p>' if b else "") + '</article>')
-        cards = "\n".join(card(i, sv) for i, sv in enumerate(services, 1))
+            rows.append(f'        <li class="reveal{"" if b else " nop"}"><span class="no" aria-hidden="true">{i:02d}</span><h3>{e(sv)}</h3>'
+                        + (f'<p>{e(b)}</p>' if b else "") + f'<span class="go">{ICON_ARROW}</span></li>')
         sections.append(f'''    <section id="services" class="section%%ALT%%">
-      <div class="container">
-        <div class="section-head reveal"><span class="kicker">What&rsquo;s on offer</span><h2>Services</h2></div>
-        <div class="cards">
-{cards}
-        </div>
+      <div class="wrap">
+        <div class="sec-head reveal"><h2 class="disp h2">Train <em class="serif">your</em> way</h2><span class="eyebrow">What&rsquo;s on offer</span></div>
+        <ul class="list">
+{chr(10).join(rows)}
+        </ul>
       </div>
     </section>''')
 
@@ -221,22 +208,23 @@ def render(g):
         for i, t in enumerate(team, 1):
             f_, alt = (t, f"{name} photo {i} of {len(team)}") if isinstance(t, str) else (t["file"], t.get("alt") or f"{name} photo {i} of {len(team)}")
             figs.append(f'          <figure class="reveal"><img src="assets/images/{e(f_)}" alt="{e(alt)}" loading="lazy"></figure>')
+        grid = "bento" if len(team) >= 3 else "duo"
         sections.append(f'''    <section id="gallery" class="section%%ALT%%">
-      <div class="container">
-        <div class="section-head reveal"><span class="kicker">Gallery</span><h2>The people and the floor</h2></div>
-        <div class="gallery">
+      <div class="wrap">
+        <div class="sec-head reveal"><h2 class="disp h2">Inside the <em class="serif">gym</em></h2><span class="eyebrow">Gallery</span></div>
+        <div class="{grid}">
 {chr(10).join(figs)}
         </div>
       </div>
     </section>''')
 
-    band_btns = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>' if phone
-                 else f'<a class="btn" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Find us</a>')
-    band_p = "Call to ask about membership." if phone else "Find the gym on the map."
-    sections.append(f'''    <section class="section%%ALT%%">
-      <div class="container">
-        <div class="band reveal">
-          <div><h2>Ready to start?</h2><p>{band_p}</p></div>
+    band_btns = (f'<a class="btn dark" href="{tel_href}">{ICON_PHONE}Call {e(phone)}</a>'
+                 f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">Directions</a>' if phone
+                 else f'<a class="btn dark" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>')
+    sections.append(f'''    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        <div class="cta-block reveal">
+          <h2 class="disp">Come see it <em class="serif">in person.</em></h2>
           <div class="cta">{band_btns}</div>
         </div>
       </div>
@@ -246,20 +234,21 @@ def render(g):
     if address:
         info.append(f'<div><dt>Address</dt><dd>{e(address)}</dd></div>')
     if g.get("hours"):
-        rows = "\n".join(f'              <li><span>{e(h["days"])}</span><span>{e(h["time"])}</span></li>' for h in g["hours"])
-        info.append(f'<div><dt>Hours</dt><dd><ul class="hours">\n{rows}\n            </ul></dd></div>')
+        hrows = "\n".join(f'              <li><span>{e(h["days"])}</span><span>{e(h["time"])}</span></li>' for h in g["hours"])
+        info.append(f'<div><dt>Hours</dt><dd><ul class="hours">\n{hrows}\n            </ul></dd></div>')
     if phone:
         info.append(f'<div><dt>Phone</dt><dd><a class="link" href="{tel_href}">{e(phone)}</a></dd></div>')
     contact_btns = (f'<a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
                     f'<a class="btn ghost" target="_blank" rel="noopener" href="{wa_href}">WhatsApp</a>' if phone else "")
     contact_btns += f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a>'
-    sections.append(f'''    <section id="contact" class="section%%ALT%%">
-      <div class="container">
-        <div class="section-head reveal"><span class="kicker">Find us</span><h2>Visit {e(name)}</h2></div>
-        <div class="contact">
+    info_html = "\n              ".join(info)
+    sections.append(f'''    <section id="visit" class="section" style="padding-top:0">
+      <div class="wrap">
+        <div class="sec-head reveal"><h2 class="disp h2">Visit <em class="serif">us</em></h2><span class="eyebrow">Find us</span></div>
+        <div class="visit">
           <div class="info reveal">
             <dl>
-              {chr(10).join("              " + x if i else x for i, x in enumerate(info))}
+              {info_html}
             </dl>
             <div class="cta">{contact_btns}</div>
           </div>
@@ -267,7 +256,8 @@ def render(g):
         </div>
       </div>
     </section>''')
-    sections_html = "\n\n".join(s.replace("%%ALT%%", " alt" if i % 2 == 1 else "") for i, s in enumerate(sections))
+    # services get the tinted band; the rest stay on the base colour
+    sections_html = "\n\n".join(s.replace("%%ALT%%", " alt" if 'id="services"' in s else "") for s in sections)
 
     mobile_bar = (f'<div class="mobile-bar"><a class="btn" href="{tel_href}">{ICON_PHONE}Call</a>'
                   f'<a class="btn ghost" target="_blank" rel="noopener" href="{maps_link}">{ICON_PIN}Directions</a></div>' if phone else
@@ -283,14 +273,14 @@ def render(g):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{e(title)}</title>
   <meta name="description" content="{e(desc)}">
-{robots}  <meta name="theme-color" content="#08090c">
+{robots}  <meta name="theme-color" content="#09090b">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{e(title)}">
   <meta property="og:description" content="{e(desc)}">
   <link rel="icon" href="{favicon}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>:root{{--accent:{accent};--accent-rgb:{ar},{ag},{ab};--on-accent:{on_accent}}}</style>
   <script>document.documentElement.classList.add("js");setTimeout(function(){{if(!window.__gymOk)document.documentElement.classList.add("reveal-all")}},2500)</script>
@@ -300,7 +290,7 @@ def render(g):
   <div class="top">
   {preview_bar}
   <header class="site-header">
-    <div class="container nav">
+    <div class="wrap nav">
       <a class="brand" href="#" aria-label="{e(name)} home"><span class="brand-mark">{e(initials)}</span>{e(name)}</a>
       <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
       <nav id="nav-links" class="nav-links" aria-label="Main">
@@ -314,27 +304,25 @@ def render(g):
   <main id="main">
     <section class="{hero_cls}">
       {hero_img}
-      <div class="container {grid_cls}">
+      <div class="{grid_cls}">
         <div>
           <span class="pill"><i></i>{e(loc)}</span>
-          <h1>Stronger every day at <em>{e(name)}</em></h1>
+          <h1 class="disp h1">Stronger<br><em class="serif">every</em> day.</h1>
           <p class="lead">{e(lead)}</p>
           <div class="cta">
             {primary}
             {secondary}
           </div>
         </div>
-        {hero_side}
+        {pass_card}
       </div>
     </section>
-{stats_html}
-{ticker}
 
 {sections_html}
   </main>
 
   <footer>
-    <div class="container">
+    <div class="wrap">
       {footer_p}
     </div>
   </footer>

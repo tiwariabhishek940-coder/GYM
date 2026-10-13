@@ -9,5 +9,6 @@
   "reviews": 47,
   "services": [],
   "images": {},
-  "status": "Prospect draft"
+  "status": "Prospect draft",
+  "accent": "#f472b6"
 }

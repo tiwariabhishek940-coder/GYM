@@ -29,6 +29,9 @@ GYM/
 | 9 | The Hulk Gym | [sites/the-hulk-gym](sites/the-hulk-gym) | - | Prospect draft |
 | 10 | Hybrix | [sites/hybrix-gym](sites/hybrix-gym) | - | Prospect draft |
 | 11 | Raw Fit Fitness Center | [sites/raw-fit-fitness-center](sites/raw-fit-fitness-center) | - | Prospect draft |
+| 12 | BU Fitness Club | [sites/bu-fitness-club](sites/bu-fitness-club) | - | Prospect draft |
+| 13 | Torquehouse Gym | [sites/torquehouse-gym](sites/torquehouse-gym) | - | Prospect draft |
+| 14 | TRP Fitness | [sites/trp-fitness](sites/trp-fitness) | - | Prospect draft |
 
 ## Adding a new site
 

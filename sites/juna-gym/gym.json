@@ -10,5 +10,6 @@
   "services": [],
   "images": {},
   "status": "Prospect draft",
-  "phone": "+91 95759 64444"
+  "phone": "+91 95759 64444",
+  "accent": "#4ade80"
 }

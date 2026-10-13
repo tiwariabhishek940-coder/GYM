@@ -1,27 +1,335 @@
 {
   "city": "Bhopal",
-  "note": "Found via web search of aggregator listings (Fitpass, LyfSkills, Yappe). Unverified: confirm phone/hours with the gym before building or publishing. null = not found.",
+  "note": "Found via web search of aggregator listings (Fitpass, LyfSkills, Yappe). Unverified: confirm phone/hours with the gym before building or publishing. null = not found. Dance/art/martial-arts academies were excluded. Only 8 of ~50 gyms have a phone number from these sources.",
   "areas": {
     "Kolar Road": [
-      {"name": "S3 Fitness", "status": "site built (sites/s3-fitness)", "rating": 5.0, "reviews": 99},
-      {"name": "Raiden Gym", "address": "Plot No. 1, Sector C, K K Nagar, Sarvdharm, Kolar Road, Bhopal 462042", "phone": "+91 70333 33807", "rating": 4.7, "reviews": 158, "hours": "6 AM - 10 PM", "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523"},
-      {"name": "The Hulk Gym", "address": "25, Kolar Road, Bairagarh Chichali, Bhopal", "phone": null, "rating": 4.5, "reviews": 230, "source": "https://www.explurger.com/pd/1d774wia0cpa4kiep"},
-      {"name": "Hybrix", "address": null, "phone": null, "rating": 5.0, "reviews": 47, "source": "https://fitpass.co.in/studio/hybrix-kolar-road-bhopal"},
-      {"name": "Raw Fit Fitness Center", "address": null, "phone": null, "rating": 4.6, "reviews": 12, "source": "https://fitpass.co.in/studio/raw-fit-fitness-center-kolar-road-bhopal"}
+      {
+        "name": "S3 Fitness",
+        "status": "site built (sites/s3-fitness)",
+        "rating": 5.0,
+        "reviews": 99
+      },
+      {
+        "name": "Raiden Gym",
+        "address": "Plot No. 1, Sector C, K K Nagar, Sarvdharm, Kolar Road, Bhopal 462042",
+        "phone": "+91 70333 33807",
+        "rating": 4.7,
+        "reviews": 158,
+        "hours": "6 AM - 10 PM",
+        "source": "https://yappe.in/madhya-pradesh/bhopal/raiden-gym/259523"
+      },
+      {
+        "name": "The Hulk Gym",
+        "address": "25, Kolar Road, Bairagarh Chichali, Bhopal",
+        "phone": null,
+        "rating": 4.5,
+        "reviews": 230,
+        "source": "https://www.explurger.com/pd/1d774wia0cpa4kiep"
+      },
+      {
+        "name": "Hybrix",
+        "address": null,
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 47,
+        "source": "https://fitpass.co.in/studio/hybrix-kolar-road-bhopal"
+      },
+      {
+        "name": "Raw Fit Fitness Center",
+        "address": null,
+        "phone": null,
+        "rating": 4.6,
+        "reviews": 12,
+        "source": "https://fitpass.co.in/studio/raw-fit-fitness-center-kolar-road-bhopal"
+      }
     ],
     "MP Nagar": [
-      {"name": "The Max Fitness", "address": "Third Floor, Gurukripa Arcade, HIG-1, beside Parul Hospital, Shivaji Nagar, Bhopal 462016", "phone": null, "rating": 4.7, "reviews": 200, "source": "https://discover.lyfskills.com/gyms/listing/11909"},
-      {"name": "Flesh Fitness Club", "address": null, "phone": null, "rating": 4.5, "reviews": 10, "hours": "5:30 AM - 10 PM", "source": "https://fitpass.co.in/studio/flesh-fitness-club-mp-nagar-mp-nagar"}
+      {
+        "name": "The Max Fitness",
+        "address": "Third Floor, Gurukripa Arcade, HIG-1, beside Parul Hospital, Shivaji Nagar, Bhopal 462016",
+        "phone": null,
+        "rating": 4.7,
+        "reviews": 200,
+        "source": "https://discover.lyfskills.com/gyms/listing/11909"
+      },
+      {
+        "name": "Flesh Fitness Club",
+        "address": null,
+        "phone": null,
+        "rating": 4.5,
+        "reviews": 10,
+        "hours": "5:30 AM - 10 PM",
+        "source": "https://fitpass.co.in/studio/flesh-fitness-club-mp-nagar-mp-nagar"
+      }
     ],
     "Arera Colony": [
-      {"name": "JUNA", "address": "E-3/150, 10 Number Stop, Near Agarwal Hospital, Arera Colony, Bhopal 462016", "phone": "+91 95759 64444", "rating": 4.7, "reviews": 363, "source": "https://yappe.in/madhya-pradesh/bhopal/juna/123935"},
-      {"name": "Akhada The Fitness Planet", "address": "Sagar Tower, Ground floor, E-7/137, near 10 No. market, Arera Colony, Bhopal 462016", "phone": null, "rating": 5.0, "reviews": 55, "source": "https://discover.lyfskills.com/gyms/listing/12004"},
-      {"name": "BR Fitness", "address": "Above Indian Coffee House, Gulmohar Colony, E-8, Arera Colony, Bhopal 462039", "phone": null, "rating": 4.8, "reviews": 101, "source": "https://discover.lyfskills.com/gyms/listing/11917"},
-      {"name": "The Muscle Factory Gym", "address": null, "phone": null, "hours": "6 AM - 10 PM", "source": "https://fitpass.co.in/studio/the-muscle-factory-gym-arera-colony"}
+      {
+        "name": "JUNA",
+        "address": "E-3/150, 10 Number Stop, Near Agarwal Hospital, Arera Colony, Bhopal 462016",
+        "phone": "+91 95759 64444",
+        "rating": 4.7,
+        "reviews": 363,
+        "source": "https://yappe.in/madhya-pradesh/bhopal/juna/123935"
+      },
+      {
+        "name": "Akhada The Fitness Planet",
+        "address": "Sagar Tower, Ground floor, E-7/137, near 10 No. market, Arera Colony, Bhopal 462016",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 55,
+        "source": "https://discover.lyfskills.com/gyms/listing/12004"
+      },
+      {
+        "name": "BR Fitness",
+        "address": "Above Indian Coffee House, Gulmohar Colony, E-8, Arera Colony, Bhopal 462039",
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 101,
+        "source": "https://discover.lyfskills.com/gyms/listing/11917"
+      },
+      {
+        "name": "The Muscle Factory Gym",
+        "address": null,
+        "phone": null,
+        "hours": "6 AM - 10 PM",
+        "source": "https://fitpass.co.in/studio/the-muscle-factory-gym-arera-colony"
+      }
     ],
     "Ayodhya Bypass": [
-      {"name": "Sky5 Fitness", "address": "Plot no 8&9, opposite Sagar Avenue, Ayodhya Bypass Road, Ayodhya Nagar, Bhopal 462022", "phone": "+91 99264 01265", "source": "https://yappe.in/madhya-pradesh/bhopal/sky5fitness/250217"}
+      {
+        "name": "Sky5 Fitness",
+        "address": "Plot no 8&9, opposite Sagar Avenue, Ayodhya Bypass Road, Ayodhya Nagar, Bhopal 462022",
+        "phone": "+91 99264 01265",
+        "source": "https://yappe.in/madhya-pradesh/bhopal/sky5fitness/250217"
+      }
+    ],
+    "Hoshangabad Road": [
+      {
+        "name": "Swastham Fitness Centre",
+        "address": "1st Floor, Gaur Plaza, Phase 1, Tilak Nagar, Bawadiya Kalan, Gulmohar Colony, Bhopal 462039",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 176,
+        "source": "https://discover.lyfskills.com/gyms/listing/11888"
+      },
+      {
+        "name": "Shivaay The Fitness Club",
+        "address": "Arvind Vihar, Housing Board Colony, Bagmugaliya, Bhopal 462043",
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 30,
+        "source": "https://discover.lyfskills.com/gyms/listing/11999"
+      }
+    ],
+    "Awadhpuri / Piplani": [
+      {
+        "name": "Muscles Velocity Gym",
+        "address": "2nd & 3rd floor, Bharat Mart, Sai Garden, B-9 & B-10, near Vidya Sagar College, New Fort Colony, Awadhpuri, Bhopal 462022",
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 428,
+        "source": "https://discover.lyfskills.com/gyms/listing/11950"
+      },
+      {
+        "name": "Forge Fitness Gym",
+        "address": "52, Samanvay Nagar, Awadhpuri, Bhopal 462022",
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 371,
+        "source": "https://discover.lyfskills.com/gyms/listing/11897"
+      },
+      {
+        "name": "Dangal Gym",
+        "address": "2 B, near SBI Bank, Samanvay Nagar, Awadhpuri, Bhopal 462022",
+        "phone": null,
+        "rating": 4.7,
+        "reviews": 290,
+        "source": "https://discover.lyfskills.com/gyms/listing/11920"
+      },
+      {
+        "name": "Nirvana Gym",
+        "address": "Nirmal Palace Rd, Soumya Vihar-I, Awadhpuri, Bhopal 462022",
+        "phone": null,
+        "rating": 4.5,
+        "reviews": 380,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/awadhpuri"
+      },
+      {
+        "name": "Train Hard Gym",
+        "address": "63 B, Sector, Awadhpuri, Bhopal 462022 (address incomplete)",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 140,
+        "source": "https://discover.lyfskills.com/gyms/listing/11984"
+      },
+      {
+        "name": "Rockway Fitness Factory",
+        "address": "Near Rajora farm house, Khajuri Kalan Rd, Piplani, Awadhpuri, Bhopal 462022",
+        "phone": null,
+        "rating": 4.6,
+        "reviews": 135,
+        "hours": "5 AM - 10 PM",
+        "source": "https://discover.lyfskills.com/gyms/listing/11951"
+      }
+    ],
+    "Ashoka Garden": [
+      {
+        "name": "MY GYM",
+        "address": "31, Iqbal Nagar, Ashoka Garden, Bhopal 462023",
+        "phone": "+91 98263 20307",
+        "rating": 4.3,
+        "reviews": 311,
+        "source": "https://yappe.in/madhya-pradesh/bhopal/my-gym/259577"
+      },
+      {
+        "name": "Ironman Gym",
+        "address": "118 Ashoka Estate, beside Apsara Talkies, Raisen Road, Bhopal 462023",
+        "phone": "98260 43222",
+        "hours": "Mon-Sat 6-11 am, 5-10 pm; Sun closed"
+      },
+      {
+        "name": "Smart New Boddy Shape Gym (Ashoka Vihar)",
+        "address": null,
+        "phone": null,
+        "hours": "6:30 AM - 11 PM",
+        "source": "https://fitpass.co.in/studio/smart-new-boddy-shape-gym-ashoka-vihar"
+      }
+    ],
+    "Habibganj / Kasturba Nagar": [
+      {
+        "name": "Galaxy Gym",
+        "address": "BCCI Building, near Chetak Bridge, B-75, Kasturba Nagar, Bhopal 462023",
+        "phone": "+91 93021 02347",
+        "rating": 3.6,
+        "reviews": 96,
+        "source": "https://yappe.in/madhya-pradesh/bhopal/galaxy-gym/123792"
+      },
+      {
+        "name": "FITBLISS (luxury gym)",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/habibganj"
+      },
+      {
+        "name": "Physique N Figure",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/habibganj"
+      }
+    ],
+    "Salaiya / Gulmohar Colony": [
+      {
+        "name": "AS Fitness Terminus",
+        "address": "2nd floor, AY Towers, Danish Kunj, Kolar Rd, Bhopal 462039",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 262,
+        "source": "https://discover.lyfskills.com/gyms/listing/11892"
+      },
+      {
+        "name": "Cult Gym Gulmohar Colony",
+        "address": "Apollo Sage Hospital, Bawadiya Kalan, Salaiya, Bhopal 462039",
+        "phone": null,
+        "rating": 4.4,
+        "reviews": 58,
+        "source": "https://discover.lyfskills.com/gyms/listing/11972"
+      },
+      {
+        "name": "Torquehouse Gym",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/listing/11949"
+      }
+    ],
+    "Ayodhya Bypass / Chhatrasal Nagar": [
+      {
+        "name": "Tarun Fitness Arena",
+        "address": "Near Tanatan Dhaba, front of Shubh Hospital, Ahinsa Vihar Colony, Ayodhya Bypass, Bhopal 462041",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 323,
+        "source": "https://discover.lyfskills.com/gyms/listing/12002"
+      }
+    ],
+    "Narmadapuram Rd / Narayan Nagar": [
+      {
+        "name": "Six AM Fitness Studio",
+        "address": "22, Narmadapuram Rd, opposite Barkatullah University, Bhopal 462026",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 16,
+        "source": "https://discover.lyfskills.com/gyms/listing/11970"
+      }
+    ],
+    "Indrapuri": [
+      {
+        "name": "Eternity Fitness",
+        "address": "Bldg 276, 2nd floor, Bharat Nagar Rd, Karamveer Nagar, Indrapuri, Bhopal 462021",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 20,
+        "source": "https://discover.lyfskills.com/gyms/listing/11994"
+      }
+    ],
+    "Budhwara / Karond / Vidisha Rd": [
+      {
+        "name": "Shape In Gym (Budhwara)",
+        "address": null,
+        "phone": null,
+        "rating": 4.3,
+        "reviews": null,
+        "source": "https://fitpass.co.in/blog/top-gyms-in-bhopal"
+      },
+      {
+        "name": "Fitness Rockers Gym (Karond)",
+        "address": null,
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 10,
+        "source": "https://fitpass.co.in/bhopal/karond/fitness-centers"
+      },
+      {
+        "name": "Boom Fitness Centre (Vidisha Road)",
+        "address": null,
+        "phone": null,
+        "source": "https://fitpass.co.in/blog/top-gyms-in-bhopal"
+      }
+    ],
+    "Bairagarh": [
+      {
+        "name": "Muscle Garage Gym",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/bairagarh"
+      },
+      {
+        "name": "Anytime 24x7 Gym",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/bairagarh"
+      },
+      {
+        "name": "Niva Fitness",
+        "address": null,
+        "phone": null,
+        "source": "https://discover.lyfskills.com/gyms/bhopal/in/bairagarh"
+      }
     ]
   },
-  "todo_areas": ["Hoshangabad Road", "Shahpura", "Bairagarh", "Piplani", "Kolar (Lalita Nagar)", "Habibganj", "Ashoka Garden", "Katara Hills", "Awadhpuri", "Jahangirabad", "Old City / Bhopal Talkies"]
+  "todo_areas": [
+    "Kolar Road: Hybrix/Raw Fit details",
+    "Gulmohar Colony",
+    "Govindpura",
+    "Bawadia Kalan",
+    "Saket Nagar",
+    "Shivaji Nagar",
+    "Tulsi Nagar",
+    "Misrod"
+  ],
+  "areas_no_gyms_found": [
+    "Shahpura (only dance/art schools)",
+    "Katara Hills",
+    "Jahangirabad",
+    "Old City / Bhopal Talkies (nearest: Budhwara, Karond)"
+  ]
 }

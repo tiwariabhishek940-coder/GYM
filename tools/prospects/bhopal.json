@@ -23,7 +23,8 @@
           "Cardio",
           "Strength training"
         ],
-        "services_source": "https://fitpass.co.in/studio/raiden-gym-kolar-road (search summary: HIIT, cardio, several types of weight and strength training)"
+        "services_source": "https://fitpass.co.in/studio/raiden-gym-kolar-road (search summary: HIIT, cardio, several types of weight and strength training)",
+        "address_alt": "DK 3/23, above Davaindia, Danish Kunj, Kolar Road (FITPASS listing) - differs from the K K Nagar / Sarvdharm address above; confirm with owner"
       },
       {
         "name": "The Hulk Gym",
@@ -45,7 +46,7 @@
       },
       {
         "name": "Raw Fit Fitness Center",
-        "address": null,
+        "address": "Second Floor, Raw Fit Fitness, DK 2/418, Danish Kunj, Kolar Road, Bhopal",
         "phone": null,
         "rating": 4.6,
         "reviews": 12,
@@ -331,6 +332,86 @@
         "phone": null,
         "source": "https://discover.lyfskills.com/gyms/bhopal/in/bairagarh"
       }
+    ],
+    "Kolar belt: Danish Kunj / Bawadiya Kalan / Chuna Bhatti": [
+      {
+        "name": "Colosseum Gymnasium",
+        "address": "DK 2/437, Second Floor, Danish Kunj, beside SBI Bank, Kolar Road, Bhopal",
+        "phone": null,
+        "rating": 5.0,
+        "reviews": 10,
+        "note": "only ~10 reviews",
+        "source": "https://fitpass.co.in/studio/colosseum-gymnasium-kolar-road"
+      },
+      {
+        "name": "TRP Fitness",
+        "address": "5 Bansal Vihar Colony, Rohit Nagar, Bawadiya Kalan, Bhopal",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 120,
+        "hours": "6 AM - 1 PM (as listed)",
+        "note": "reviewer says gym is small",
+        "source": "https://fitpass.co.in/studio/trp-fitness-bawadiya-kalan"
+      },
+      {
+        "name": "BU Fitness Club",
+        "address": "Block-A, Aakriti Eco City Rd, Rohit Nagar, Bawadiya Kalan, Gulmohar Colony, Bhopal 462039",
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 145,
+        "source": "https://discover.lyfskills.com/gyms/listing/11898"
+      },
+      {
+        "name": "Torquehouse Gym",
+        "address": "5C9R+WV5, Aakriti Eco City Rd, Rohit Nagar Phase 1, Salaiya, Bhopal 462039",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 83,
+        "source": "https://discover.lyfskills.com/gyms/listing/11949"
+      },
+      {
+        "name": "Pro Ultimate Gyms (Golden Plaza)",
+        "address": "Golden Plaza, 3rd floor, Aura Mall, Gulmohar, Bhopal 462039",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 94,
+        "source": "https://discover.lyfskills.com/gyms/listing/11905"
+      },
+      {
+        "name": "Gold's Gym Bhopal",
+        "address": "Level-5, Virasha STC, above Barbeque Nation, Bawadiya Kalan Main Rd, Bhopal 462039",
+        "phone": null,
+        "rating": 4.2,
+        "reviews": 433,
+        "note": "franchise brand; owner may not control website",
+        "source": "https://discover.lyfskills.com/gyms/listing/11913"
+      },
+      {
+        "name": "Vision Fitness (Chuna Bhatti)",
+        "address": "3rd floor, The Mall, Chuna Bhatti, Kolar Road, Bhopal",
+        "phone": null,
+        "rating": 4.9,
+        "reviews": 24,
+        "hours": "6:30 AM - 10 PM",
+        "source": "https://fitpass.co.in/studio/vision-fitness-kolar-road-chuna-bhatti-bhopal"
+      },
+      {
+        "name": "Flesh Fitness Club (Kolar Road)",
+        "address": null,
+        "phone": null,
+        "rating": 4.8,
+        "reviews": 5,
+        "note": "very few reviews; may be same brand as the MP Nagar branch",
+        "source": "https://fitpass.co.in/studio/flesh-fitness-club-mp-nagar-mp-nagar"
+      },
+      {
+        "name": "Z Nine The Fitness Station (Chuna Bhatti)",
+        "address": null,
+        "phone": null,
+        "rating": 4.3,
+        "reviews": null,
+        "source": "https://fitpass.co.in/bhopal/chola/fitness-centers"
+      }
     ]
   },
   "todo_areas": [
@@ -347,6 +428,15 @@
     "Shahpura (only dance/art schools)",
     "Katara Hills",
     "Jahangirabad",
-    "Old City / Bhopal Talkies (nearest: Budhwara, Karond)"
+    "Old City / Bhopal Talkies (nearest: Budhwara, Karond)",
+    "Kaliyasot / Kerwa Dam road",
+    "Misrod (only dance/karate/Zumba studios)",
+    "Sarvdharm Colony (only yoga classes)"
+  ],
+  "excluded_not_gyms": [
+    "ROY MMA Academy (martial arts)",
+    "Sanju Dance Academy",
+    "DSDA (dance)",
+    "Kalpana's Yoga Class"
   ]
 }

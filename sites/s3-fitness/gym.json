@@ -9,15 +9,36 @@
   "rating": 5.0,
   "reviews": 99,
   "hours": [
-    {"days": "Monday – Saturday", "time": "6–11 am · 5–10 pm"},
-    {"days": "Sunday", "time": "Closed"}
+    {
+      "days": "Monday – Saturday",
+      "time": "6–11 am · 5–10 pm"
+    },
+    {
+      "days": "Sunday",
+      "time": "Closed"
+    }
   ],
-  "services": ["Weight training", "Personal training", "Crossfit", "HIIT", "Cycling", "Aerobics", "Zumba", "Dance fitness", "Yoga", "Nutrition consulting"],
+  "services": [
+    "Weight training",
+    "Personal training",
+    "Crossfit",
+    "HIIT",
+    "Cycling",
+    "Aerobics",
+    "Zumba",
+    "Dance fitness",
+    "Yoga",
+    "Nutrition consulting"
+  ],
   "about": "A premium fitness gym with high-quality equipment and diverse training classes. Whether you are starting out or training for a goal, you get a spacious floor and a supportive community.",
   "images": {
     "hero": "gym-floor-2.webp",
     "about": "gym-floor-1.webp",
-    "team": ["trainers.webp", "team-group.webp"]
+    "team": [
+      "trainers.webp",
+      "team-group.webp"
+    ]
   },
-  "status": "Draft"
+  "status": "Draft",
+  "accent": "#ff4d2e"
 }
